@@ -8,6 +8,9 @@ Simple utility programs for manipulating DFA/NFAs.
 - `equal.py` -- Test whether two DFAs are equivalent.
 - `draw.py` -- Draw a state-transition diagram in Graphviz dot format.
 
+These programs use [PyYAML](https://pypi.org/project/PyYAML/).
+You need to install it with `pip install PyYAML`.
+
 ## Input format
 
 The programs accept NFA/DFA descriptions in the following YAML format.
