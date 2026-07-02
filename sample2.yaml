@@ -1,0 +1,9 @@
+# a sample nfa (accepting a*b*)
+Q: [q0, q1]
+Sigma: [a, b]
+start: q0
+F: [q1]
+delta:
+  - [q0, a, q0]
+  - [q0, eps, q1]
+  - [q1, b, q1]
