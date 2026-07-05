@@ -10,6 +10,15 @@ Simple utility programs for manipulating DFA/NFAs.
 
 These programs use [PyYAML](https://pypi.org/project/PyYAML/).
 You need to install it with `pip install PyYAML`.
+If you like to install it locally using
+[venv](https://docs.python.org/ja/3/library/venv.html),
+perform the following steps:
+
+```sh
+$ python3 -m venv .venv
+$ source .venv/bin/activate
+$ pip install PyYAML
+```
 
 ## Input format
 
