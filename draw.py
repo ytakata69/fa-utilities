@@ -6,8 +6,7 @@
 # $ pip install pyyaml
 #
 # Usage:
-# $ ./draw.py < m22.yml > m22.dot
-# $ dot -Tpdf m22.dot > m22.pdf
+# $ ./draw.py < m22.yml | dot -Tpdf > m22.pdf
 #
 # This program reads a description of an NFA in YAML format
 # from stdin.
@@ -15,6 +14,8 @@
 import yaml
 import sys
 from collections import deque
+
+finalNodeStyle = "[style=filled, fillcolor=gray]"
 
 nfa = yaml.safe_load(sys.stdin)
 
@@ -24,6 +25,9 @@ if type(nfa['Q'][0]) is list:
     nfa['F'] = [''.join(qs) for qs in nfa['F']]
     nfa['start'] = ''.join(nfa['start'])
     nfa['delta'] = [[''.join(q), a, ''.join(q2)] for q, a, q2 in nfa['delta']]
+
+# List to set
+nfa['F'] = set(nfa['F'])
 
 # Reform the data structure (from a list to a dict).
 delta = {}
@@ -49,7 +53,7 @@ while len(worklist) > 0:
     q = worklist.popleft()
     if q not in visited:
         visited.add(q)
-        print(f'  "{q}"')
+        print(f'  "{q}"', finalNodeStyle if q in nfa['F'] else "")
         for a in nfa['Sigma'] + ["eps"]:
             if (q, a) in delta:
                 worklist.extend(sorted(delta[(q, a)]))
