@@ -16,6 +16,7 @@ import sys
 from collections import deque
 
 finalNodeStyle = "[style=filled, fillcolor=gray]"
+eps = "eps"
 
 nfa = yaml.safe_load(sys.stdin)
 
@@ -33,10 +34,12 @@ nfa['F'] = set(nfa['F'])
 delta = {}
 for q, a, q2 in nfa['delta']:
     assert q in nfa['Q']
-    assert a == "eps" or a in nfa['Sigma']
-    if (q, a) not in delta:
-        delta[(q, a)] = set()
-    delta[(q, a)].add(q2)
+    assert a == eps or a in nfa['Sigma']
+    if q not in delta:
+        delta[q] = {}
+    if q2 not in delta[q]:
+        delta[q][q2] = []
+    delta[q][q2].append(str(a))
 
 # Header
 print("digraph nfa {")
@@ -54,9 +57,7 @@ while len(worklist) > 0:
     if q not in visited:
         visited.add(q)
         print(f'  "{q}"', finalNodeStyle if q in nfa['F'] else "")
-        for a in nfa['Sigma'] + ["eps"]:
-            if (q, a) in delta:
-                worklist.extend(sorted(delta[(q, a)]))
+        worklist.extend(sorted(delta[q].keys()))
 
 # Edges
 print()
@@ -71,11 +72,10 @@ while len(worklist) > 0:
     q = worklist.popleft()
     if q not in visited:
         visited.add(q)
-        for a in nfa['Sigma'] + ["eps"]:
-            if (q, a) in delta:
-                for qt in delta[(q, a)]:
-                    print(f'  "{q}" -> "{qt}" [label = "{a}"]')
-                worklist.extend(sorted(delta[(q, a)]))
+        for q2 in delta[q]:
+            act = ",".join(delta[q][q2])
+            print(f'  "{q}" -> "{q2}" [label = "{act}"]')
+        worklist.extend(sorted(delta[q].keys()))
 
 # Trailer
 print()
